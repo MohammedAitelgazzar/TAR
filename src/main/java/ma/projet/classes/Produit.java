@@ -1,9 +1,7 @@
 package ma.projet.classes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Produit {
@@ -12,6 +10,12 @@ public class Produit {
     private int id;
     private String reference;
     private float prix;
+    @ManyToOne
+    @JoinColumn(name = "categorie_id")
+    public Categorie categorie;
+    @ManyToMany
+    public List<Commande> commandes;
+
     public Produit() {}
 
     public int getId() {
@@ -36,5 +40,13 @@ public class Produit {
 
     public void setPrix(float prix) {
         this.prix = prix;
+    }
+
+    public Categorie getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
     }
 }

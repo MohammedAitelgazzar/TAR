@@ -1,11 +1,9 @@
 package ma.projet.classes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.xml.crypto.Data;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Commande {
@@ -13,6 +11,8 @@ public class Commande {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private Date date;
+    @OneToMany(mappedBy = "commande")
+    private List<Produit> produits;
 
     public Commande() {
     }

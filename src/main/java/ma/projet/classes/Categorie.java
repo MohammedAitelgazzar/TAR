@@ -1,9 +1,7 @@
 package ma.projet.classes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Categorie {
@@ -12,6 +10,8 @@ public class Categorie {
     private int id;
     private String code;
     private String libelle;
+    @OneToMany(mappedBy = "categorie", fetch = FetchType.EAGER)
+    private List<Produit> produits;
     public Categorie() {}
 
     public int getId() {
@@ -37,4 +37,13 @@ public class Categorie {
     public void setLibelle(String libelle) {
         this.libelle = libelle;
     }
+
+    public List<Produit> getProduits() {
+        return produits;
+    }
+
+    public void setProduits(List<Produit> produits) {
+        this.produits = produits;
+    }
+
 }
