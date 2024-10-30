@@ -12,9 +12,14 @@ public class Commande {
     private int id;
     private Date date;
     @OneToMany(mappedBy = "commande")
-    private List<Produit> produits;
+    private List<LigneCommandeProduit> ligneCommandeProduits;
 
     public Commande() {
+    }
+
+    public Commande(Date date, List<LigneCommandeProduit> ligneCommandeProduits) {
+        this.date = date;
+        this.ligneCommandeProduits = ligneCommandeProduits;
     }
 
     public int getId() {

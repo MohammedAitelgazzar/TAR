@@ -8,10 +8,14 @@ public class LigneCommandeProduit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int quantite;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "commande_id")
     private Commande commande;
-    @OneToOne
+
+    @ManyToOne
+    @JoinColumn(name = "produit_id")
     private Produit produit;
+
 
 
     public LigneCommandeProduit() {

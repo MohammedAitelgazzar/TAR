@@ -17,6 +17,9 @@ public class CategorieService implements IDao<Categorie> {
             session.save(categorie);
             transaction.commit();
             return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -26,6 +29,7 @@ public class CategorieService implements IDao<Categorie> {
             return session.get(Categorie.class, id);
         }
     }
+
 
     @Override
     public List getAll() {

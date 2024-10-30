@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@NamedQuery(name = "Produit.findByPriceGreaterThan100", query = "FROM Produit p WHERE p.prix > 100")
 public class Produit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,8 +14,8 @@ public class Produit {
     @ManyToOne
     @JoinColumn(name = "categorie_id")
     public Categorie categorie;
-    @ManyToMany
-    public List<Commande> commandes;
+    @OneToMany(mappedBy = "produit")
+    private List<LigneCommandeProduit> ligneCommandeProduits;
 
     public Produit() {}
 
@@ -48,5 +49,12 @@ public class Produit {
 
     public void setCategorie(Categorie categorie) {
         this.categorie = categorie;
+    }
+
+    public Produit( String reference, float prix, Categorie categorie, List<LigneCommandeProduit> ligneCommandeProduits) {
+        this.reference = reference;
+        this.prix = prix;
+        this.categorie = categorie;
+        this.ligneCommandeProduits = ligneCommandeProduits;
     }
 }

@@ -46,4 +46,9 @@ public class Categorie {
         this.produits = produits;
     }
 
+    public Categorie(String code, String libelle, List<Produit> produits) {
+        this.code = code;
+        this.libelle = libelle;
+        this.produits = produits;
+    }
 }

@@ -26,14 +26,16 @@ public class CommandeService implements IDao<Commande> {
         }
     }
 
-    public List<Commande> getByCategorie(String categorie) {
+   /* public List<Commande> getByCategorie(String categorie) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("from Commande where date between :start and :end", Commande.class)
-                    .setParameter("start", startDate)
-                    .setParameter("end", endDate)
+                    .setParameter("start")
+                    .setParameter("end")
                     .list();
         }
     }
+
+    */
 
     @Override
     public List<Commande> getAll() {

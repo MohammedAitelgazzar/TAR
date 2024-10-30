@@ -3,41 +3,69 @@ package ma.projet.service;
 import ma.projet.classes.Produit;
 import ma.projet.dao.IDao;
 import ma.projet.util.HibernateUtil;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProduitService implements IDao<Produit> {
+
     @Override
-    public boolean create(Produit produit) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Transaction transaction = session.beginTransaction();
-            session.save(produit);
-            transaction.commit();
-            return true;
+    public boolean create(Produit p) {
+        Session session = null;
+        Transaction tx = null;
+        boolean status = false;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+            session.save(p);
+            tx.commit();
+            status = true;
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (session != null) session.close();
         }
+        return status;
     }
 
     @Override
     public Produit getById(int id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Produit.class, id);
+        Session session = null;
+        Transaction tx = null;
+        Produit produit = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+            produit = session.get(Produit.class, id);
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (session != null) session.close();
         }
-    }
-
-    @Override
-    public List<Produit> getByCategorie(String categorie) {
-        return getAll().stream()
-                .filter(produit -> produit.getCategorie().equals(categorie))
-                .collect(Collectors.toList());
+        return produit;
     }
 
     @Override
     public List<Produit> getAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery("from Produit", Produit.class).list();
+        Session session = null;
+        Transaction tx = null;
+        List<Produit> produits = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+            produits = session.createQuery("from Produit", Produit.class).list();
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        } finally {
+            if (session != null) session.close();
         }
+        return produits;
     }
 }
