@@ -8,6 +8,7 @@ import ma.projet.service.CategorieService;
 import ma.projet.service.ProduitService;
 import ma.projet.service.CommandeService;
 import ma.projet.service.LigneCommandeService;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,11 +18,20 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        CategorieService categorieService = new CategorieService();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.scan("ma.projet");
+        context.refresh();
+
+        CategorieService categorieService = context.getBean(CategorieService.class);
+        ProduitService produitService = context.getBean(ProduitService.class);
+        CommandeService commandeService = context.getBean(CommandeService.class);
+        LigneCommandeService ligneCommandeService = context.getBean(LigneCommandeService.class);
+
+        /*CategorieService categorieService = new CategorieService();
         ProduitService produitService = new ProduitService();
         CommandeService commandeService = new CommandeService();
         LigneCommandeService ligneCommandeService = new LigneCommandeService();
-
+*/
         Categorie cat1 = new Categorie("CAT1", "Catégorie 1", new ArrayList<>());
         categorieService.create(cat1);
 

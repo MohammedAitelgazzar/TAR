@@ -6,19 +6,24 @@ import ma.projet.dao.IDao;
 import ma.projet.util.HibernateUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ProduitService implements IDao<Produit> {
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
     public boolean create(Produit p) {
-        Session session = null;
         Transaction tx = null;
         boolean status = false;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            Session session = sessionFactory.openSession();
             tx = session.beginTransaction();
             session.save(p);
             tx.commit();
@@ -26,55 +31,46 @@ public class ProduitService implements IDao<Produit> {
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
-        } finally {
-            if (session != null) session.close();
         }
         return status;
     }
 
     @Override
     public Produit getById(int id) {
-        Session session = null;
         Transaction tx = null;
         Produit produit = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            Session session = sessionFactory.openSession();
             tx = session.beginTransaction();
             produit = session.get(Produit.class, id);
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
-        } finally {
-            if (session != null) session.close();
         }
         return produit;
     }
 
     @Override
     public List<Produit> getAll() {
-        Session session = null;
         Transaction tx = null;
         List<Produit> produits = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            Session session = sessionFactory.openSession();
             tx = session.beginTransaction();
             produits = session.createQuery("from Produit", Produit.class).list();
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
-        } finally {
-            if (session != null) session.close();
         }
         return produits;
     }
 
     public void getByCategorie(String codeCategorie) {
-        Session session = null;
         Transaction tx = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            Session session = sessionFactory.openSession();
             tx = session.beginTransaction();
 
             String hql = "SELECT p FROM Produit p JOIN FETCH p.categorie c WHERE c.code = :code";
@@ -98,17 +94,14 @@ public class ProduitService implements IDao<Produit> {
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
-        } finally {
-            if (session != null) session.close();
         }
     }
 
     public List<Produit> getProduitsPrixSuperieur() {
-        Session session = null;
         Transaction tx = null;
         List<Produit> produits = null;
         try {
-            session = HibernateUtil.getSessionFactory().openSession();
+            Session session = sessionFactory.openSession();
             tx = session.beginTransaction();
 
             produits = session.createNamedQuery("findByPrixSup100", Produit.class).list();
@@ -117,8 +110,6 @@ public class ProduitService implements IDao<Produit> {
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
-        } finally {
-            if (session != null) session.close();
         }
         return produits;
     }
