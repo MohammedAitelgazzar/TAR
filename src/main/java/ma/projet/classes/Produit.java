@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@NamedQuery(name = "Produit.findByPriceGreaterThan100", query = "FROM Produit p WHERE p.prix > 100")
+@NamedQuery(name = "findByPrixSup100", query = "FROM Produit p WHERE p.prix > 100")
 public class Produit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

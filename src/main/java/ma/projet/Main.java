@@ -9,6 +9,8 @@ import ma.projet.service.ProduitService;
 import ma.projet.service.CommandeService;
 import ma.projet.service.LigneCommandeService;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,35 +22,56 @@ public class Main {
         CommandeService commandeService = new CommandeService();
         LigneCommandeService ligneCommandeService = new LigneCommandeService();
 
-        Categorie categorie = new Categorie("ELEC", "Electronics", new ArrayList<>());
-        if (categorieService.create(categorie)) {
-            System.out.println("Categorie created: " + categorie.getLibelle());
-        } else {
-            System.out.println("Failed to create categorie.");
+        Categorie cat1 = new Categorie("CAT1", "Catégorie 1", new ArrayList<>());
+        categorieService.create(cat1);
+
+        Produit p1 = new Produit("EG12", 120, cat1, new ArrayList<>());
+        Produit p2 = new Produit("ZE65", 100, cat1, new ArrayList<>());
+        Produit p3 = new Produit("EE85", 200, cat1, new ArrayList<>());
+
+        produitService.create(p1);
+        produitService.create(p2);
+        produitService.create(p3);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date commandeDate = null;
+        try {
+            commandeDate = sdf.parse("14/03/2013");
+        } catch (ParseException e) {
+            e.printStackTrace();
             return;
         }
 
-        Produit produit = new Produit("Laptop", 1500.0f, categorie, new ArrayList<>());
-        if (produitService.create(produit)) {
-            System.out.println("Produit created: " + produit.getReference());
-        } else {
-            System.out.println("Failed to create produit.");
-            return;
+        Commande cmd = new Commande(commandeDate, new ArrayList<>());
+        commandeService.create(cmd);
+
+        LigneCommandeProduit lcp1 = new LigneCommandeProduit(cmd, p1, 7);
+        LigneCommandeProduit lcp2 = new LigneCommandeProduit(cmd, p2, 14);
+        LigneCommandeProduit lcp3 = new LigneCommandeProduit(cmd, p3, 5);
+
+        ligneCommandeService.create(lcp1);
+        ligneCommandeService.create(lcp2);
+        ligneCommandeService.create(lcp3);
+
+        System.out.println("Commande : " + cmd.getId() + "    Date : " + sdf.format(cmd.getDate()));
+        System.out.println("Liste des produits :");
+        System.out.println("Référence    Prix    Quantité");
+
+        List<LigneCommandeProduit> lignes = ligneCommandeService.getAll();
+        for (LigneCommandeProduit ligne : lignes) {
+            if (ligne.getCommande().getId() == cmd.getId()) {
+                System.out.println(ligne.getProduit().getReference() + "     " + ligne.getProduit().getPrix() + "     " + ligne.getQuantite());
+            }
         }
 
-        Commande commande = new Commande(new Date(), new ArrayList<>());
-        if (commandeService.create(commande)) {
-            System.out.println("Commande created with ID: " + commande.getId());
-        } else {
-            System.out.println("Failed to create commande.");
-            return;
+        produitService.getByCategorie("CAT1");
+        System.out.println("Produits avec un prix supérieur à 100 :");
+
+        List<Produit> produits = produitService.getProduitsPrixSuperieur();
+        for (Produit produit : produits) {
+            System.out.println("Référence: " + produit.getReference() + ", Prix: " + produit.getPrix());
         }
 
-        LigneCommandeProduit ligneCommandeProduit = new LigneCommandeProduit(commande, produit, 2); // 2 est la quantité
-        if (ligneCommandeService.create(ligneCommandeProduit)) {
-            System.out.println("LigneCommandeProduit created: Produit " + produit.getReference() + " avec quantité " + ligneCommandeProduit.getQuantite());
-        } else {
-            System.out.println("Failed to create LigneCommandeProduit.");
-        }
+        ligneCommandeService.getProduitsCommande(1);
     }
 }
